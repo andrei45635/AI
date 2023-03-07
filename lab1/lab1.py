@@ -10,9 +10,12 @@ def last_word(txt: str) -> str:
     for i in range(len(words) - 1):
         if words[i] > max:
             max = words[i]
-    return max            
+    if words[len(words) - 1] > max:
+        max = words[len(words) - 1]    
+    return max        
 print("Problema 1")
 print(last_word("Ana are mere rosii si galbene"))
+print(last_word("a b c d e f g h i j k l m n o p q r s t u x y w z"))
 
 # Determina distanta euclidiana dintre 2 puncte
 # p: list[int] = primul punct
