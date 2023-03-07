@@ -1,5 +1,6 @@
 import math 
 from queue import Queue
+import heapq 
 
 # Determina ultimul cuvant dpdv alfabetic dintr-un string dat 
 # txt : string = textul dat
@@ -52,6 +53,7 @@ def least_words(txt):
     return least
 print("Problema 4")
 print(least_words("ana are ana are mere rosii ana"))
+print(least_words("ana"))
 
 # Determina valoarea care se repeta de exact 2 ori 
 # vect: list[int] = vectorul dat (i e vect | i e {1, 2, ..., n - 1})
@@ -86,8 +88,19 @@ print(majoritar([2, 8, 7, 2, 2, 5, 2, 3, 2, 1, 2, 2]))
 # return val: int = al k-lea cel mai mare element
 def kth_elem(vect, k) -> int:
     return sorted(vect, reverse=True)[k - 1]
-print("Problema 7")
+print("Problema 7_1")
 print(kth_elem([7, 4, 6, 3, 9], 2))
+
+def kth_elem2(vect, k) -> int:
+    hp = vect[0:k]
+    heapq.heapify(hp)
+    for i in range(k, len(vect)):
+        if vect[i] > hp[0]:
+            heapq.heapreplace(hp, vect[i])
+    return hp[0]
+print("Problema 7_2")
+print(kth_elem2([7, 4, 6, 3, 9], 2))
+print(kth_elem2([5, 4, 6, 3, 9], 2))
 
 # Genereaza numerele in reprezentare binara de la 1 la n dat
 # n: int = limita superioara a intervalului 1...n 
