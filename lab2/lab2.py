@@ -4,8 +4,6 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import warnings
 
-from networkx.algorithms import community
-
 
 def readNetAdjList(fileName):
     edges = []
@@ -34,17 +32,21 @@ def readNet(fileName):
 
 def plotNetwork(ntwk, cms):
     g = nx.Graph(matrix=ntwk)
-    nx.draw(g, with_labels=True)
-    pos = nx.spring_layout(g)  # compute graph layout
-    plt.figure(figsize=(4, 4))  # image is 8 x 8 inches
-    nx.draw_networkx_nodes(g, pos, node_size=50, cmap=plt.get_cmap('viridis', 8), node_color=cms)
-    nx.draw_networkx_edges(g, pos, alpha=0.3)
+    # nx.draw(g, with_labels=True)
+    # pos = nx.spring_layout(g)  # compute graph layout
+    # plt.figure(figsize=(4, 4))  # image is 8 x 8 inches
+    # nx.draw_networkx_nodes(g, pos, node_size=50, cmap=plt.get_cmap('viridis', 8), node_color=cms)
+    # nx.draw_networkx_edges(g, pos, alpha=0.3)
+    # plt.show()
+    pos = nx.spring_layout(g, k=0.2, iterations=50)
+    nx.draw_networkx(g, pos, node_size=600, node_color=cms, arrows=False, with_labels=True)
     plt.show()
 
 
 def modularity(g, cmty):
     k_i = 0
     edge_qs = list(nx.edge_betweenness_centrality(g).items())
+    print(edge_qs)
     m = g.number_of_edges()
     m_comm = g.subgraph(cmty).number_of_edges()
     for node in cmty:
@@ -52,6 +54,16 @@ def modularity(g, cmty):
     q = ((m_comm / m) - ((k_i / 2 * m) ** 2))
     print(q / m)
     return max(edge_qs, key=lambda item: item[1])[0]
+
+
+def colorCommunities(g, gr):
+    community = [1] * g['nodes']
+    color = 0
+    for comm in nx.connected_components(gr):
+        color += 1
+        for node in comm:
+            community[node] = color
+    return community
 
 
 def greedyCommunitiesDetection(g, comms):
@@ -62,13 +74,8 @@ def greedyCommunitiesDetection(g, comms):
         sink, source = modularity(gr, [])
         gr.remove_edge(sink, source)
 
-    com = [1] * g['nodes']
-    color = 0
-    for comm in nx.connected_components(gr):
-        color += 1
-        for node in comm:
-            com[node] = color
-    return com
+    color_communities = colorCommunities(g, gr)
+    return color_communities
 
 
 if __name__ == '__main__':
@@ -77,7 +84,6 @@ if __name__ == '__main__':
     nt = readNet(filePath)
     network = readNetAdjList(filePath)
     coms = greedyCommunitiesDetection(network, 2)
-    print(coms)
     plotNetwork(network, coms)
 
 warnings.simplefilter('ignore')
