@@ -1,5 +1,4 @@
 import os
-import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 import warnings
@@ -30,34 +29,19 @@ def readNet(fileName):
     return gr
 
 
-def plotNetwork(ntwk, cms):
-    g = nx.Graph(matrix=ntwk)
-    # nx.draw(g, with_labels=True)
-    # pos = nx.spring_layout(g)  # compute graph layout
-    # plt.figure(figsize=(4, 4))  # image is 8 x 8 inches
-    # nx.draw_networkx_nodes(g, pos, node_size=50, cmap=plt.get_cmap('viridis', 8), node_color=cms)
-    # nx.draw_networkx_edges(g, pos, alpha=0.3)
-    # plt.show()
-    pos = nx.spring_layout(g, k=0.2, iterations=50)
-    nx.draw_networkx(g, pos, node_size=600, node_color=cms, arrows=False, with_labels=True)
-    plt.show()
-
-
-def modularity(g, cmty):
+def modularity(gr, cmty):
     k_i = 0
-    edge_qs = list(nx.edge_betweenness_centrality(g).items())
-    print(edge_qs)
-    m = g.number_of_edges()
-    m_comm = g.subgraph(cmty).number_of_edges()
+    edge_qs = list(nx.edge_betweenness_centrality(gr).items())
+    m = gr.number_of_edges()
+    m_comm = gr.subgraph(cmty).number_of_edges()
     for node in cmty:
-        k_i += g.degree(node)
+        k_i += gr.degree(node)
     q = ((m_comm / m) - ((k_i / 2 * m) ** 2))
-    print(q / m)
     return max(edge_qs, key=lambda item: item[1])[0]
 
 
-def colorCommunities(g, gr):
-    community = [1] * g['nodes']
+def colorCommunities(gr):
+    community = [1] * g.number_of_nodes()
     color = 0
     for comm in nx.connected_components(gr):
         color += 1
@@ -66,24 +50,31 @@ def colorCommunities(g, gr):
     return community
 
 
-def greedyCommunitiesDetection(g, comms):
-    adj = np.matrix(g['mat'])
-    gr = nx.from_numpy_array(adj)
-
+def greedyCommunitiesDetection(gr, comms):
     while len(list(nx.connected_components(gr))) < comms:
         sink, source = modularity(gr, [])
         gr.remove_edge(sink, source)
 
-    color_communities = colorCommunities(g, gr)
+    color_communities = colorCommunities(gr)
     return color_communities
+
+
+def plotNetwork(gr, cms):
+    if not cms:
+        cms = [0 for _ in range(0, gr.number_of_edges())]
+    pos = nx.spring_layout(gr, k=0.3, iterations=20)
+    nx.draw_networkx(gr, pos, node_size=600, node_color=cms, arrows=False, with_labels=True)
+    plt.show()
 
 
 if __name__ == '__main__':
     crtDir = os.getcwd()
-    filePath = os.path.join(crtDir, 'data', 'dolphinsEdges.txt')
+    filePath = os.path.join(crtDir, 'data', 'footballEdges.txt')
     nt = readNet(filePath)
-    network = readNetAdjList(filePath)
-    coms = greedyCommunitiesDetection(network, 2)
-    plotNetwork(network, coms)
+    adj_mat = nx.adjacency_matrix(nt)
+    g = nx.Graph(adj_mat)
+    coms = greedyCommunitiesDetection(g, 2)
+    print(coms)
+    plotNetwork(g, coms)
 
 warnings.simplefilter('ignore')
