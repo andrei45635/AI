@@ -1,25 +1,27 @@
-from numpy.random import randint
+from random import randint
 from lab3.utils import generateNewValue
 
 
 class Chromosome:
     def __init__(self, params=None):
         self.__params = params
-        self.__repres = [generateNewValue(params['min'], params['max']) for _ in range(params['dim'])]
+        self.__repres = [generateNewValue(params['min'], params['max']) for _ in range(params['noNodes'])]
         self.__fitness = 0.0
 
-    def getFitness(self):
+    @property
+    def fitness(self):
         return self.__fitness
 
-    def getRepres(self):
+    @property
+    def repres(self):
         return self.__repres
 
-    def setFitness(self, fit=0.0):
+    @fitness.setter
+    def fitness(self, fit=0.0):
         self.__fitness = fit
 
-    def setRepres(self, l=None):
-        if l is None:
-            l = []
+    @repres.setter
+    def repres(self, l=[]):
         self.__repres = l
 
     def crossover(self, c):
@@ -45,5 +47,3 @@ class Chromosome:
 
     def __eq__(self, c):
         return self.__repres == c.__repres and self.__fitness == c.__fitness
-
-

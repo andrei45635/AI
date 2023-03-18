@@ -1,4 +1,4 @@
-from numpy.random import randint
+from random import randint
 from lab3.chromosome import Chromosome
 
 
@@ -9,7 +9,7 @@ class GA:
         self.__population = []
 
     @property
-    def getPopulation(self):
+    def population(self):
         return self.__population
 
     def initialistion(self):
@@ -19,21 +19,21 @@ class GA:
 
     def eval(self):
         for c in self.__population:
-            c.fitness = self.__problParams['modularity'](c.repres)
+            c.fitness = self.__problParams['function'](c.repres)
 
     def bestChromosome(self):
         best = self.__population[0]
         for c in self.__population:
-            if best.fitness > c.fitness:
+            if c.fitness < best.fitness:
                 best = c
         return best
 
     def worstChromosome(self):
-        worst = self.__population[0]
+        best = self.__population[0]
         for c in self.__population:
-            if worst.fitness < c.fitness:
-                worst = c
-        return worst
+            if c.fitness > best.fitness:
+                best = c
+        return best
 
     def selection(self):
         pos1 = randint(0, self.__params['popSize'] - 1)
@@ -49,6 +49,7 @@ class GA:
             father = self.__population[self.selection()]
             mother = self.__population[self.selection()]
             offspring = father.crossover(mother)
+            offspring.mutation()
             newPop.append(offspring)
         self.__population = newPop
         self.eval()
@@ -59,6 +60,7 @@ class GA:
             father = self.__population[self.selection()]
             mother = self.__population[self.selection()]
             offspring = father.crossover(mother)
+            offspring.mutation()
             newPop.append(offspring)
         self.__population = newPop
         self.eval()
@@ -68,7 +70,8 @@ class GA:
             father = self.__population[self.selection()]
             mother = self.__population[self.selection()]
             offspring = father.crossover(mother)
-            offspring.fitness = self.__problParams['modularity'](offspring.fitness)
+            offspring.mutation()
+            offspring.fitness = self.__problParams['function'](offspring.repres)
             worst = self.worstChromosome()
             if offspring.fitness < worst.fitness:
                 worst = offspring
