@@ -27,6 +27,12 @@ def readGML(fileName):
 
 
 param = readGML('data/dolphins/dolphins.gml')
+# param = readGML('data/football/football.gml')
+# param = readGML('data/karate/karate.gml', label='id')
+# param = readGML('data/krebs/krebs.gml', label='id')
+# param = readGML('data/adjnoun/adjnoun.gml')
+# param = readGML('data/lesmis/lesmis.gml')
+
 MIN = 0
 MAX = param['noNodes']
 
@@ -57,24 +63,42 @@ def solveGA():
     ga.initialistion()
     ga.eval()
 
+    allCommunitiesNumbers = []
+    allFitnessValues = []
+
     bestestChromosome = Chromosome(problParam)
+
     for g in range(gaParam['noGen']):
         generations.append(g)
+
+        bestChromosome = ga.bestChromosome()
+
+        communities_dict = {}
+        for i in range(len(bestChromosome.repres)):
+            if bestChromosome.repres[i] in communities_dict:
+                communities_dict[bestChromosome.repres[i]].append(i)
+            else:
+                communities_dict[bestChromosome.repres[i]] = [i]
+
+        allCommunitiesNumbers.append(len(communities_dict))
+        allFitnessValues.append(bestChromosome.fitness)
+
+        if bestestChromosome.fitness < bestChromosome.fitness:
+            bestestChromosome = bestChromosome
 
         ga.oneGeneration()
         # ga.oneGenerationElitism()
         # ga.oneGenerationSteadyState()
 
-        bestChromosome = ga.bestChromosome()
-        if bestestChromosome.fitness < bestChromosome.fitness:
-            bestestChromosome = bestChromosome
+        print('Generation: ' + str(g) + ' nr comunitati: ' + str(
+            len(Counter(bestChromosome.repres).items())) + ' best solution in generation = ' + str(
+            bestChromosome.repres) + ' fitness = ' + str(bestChromosome.fitness))
 
-        print('Generation: ' + str(g) + ' nr comunitati: ' + str(len(Counter(bestChromosome.repres).items())) + ' best solution in generation = ' + str(bestChromosome.repres) + ' fitness = ' + str(bestChromosome.fitness))
+    print("Fitness evolution of the best chromosome: ")
+    print(allFitnessValues)
 
-    print('\n')
-    print("Communities: " + str(len(Counter(bestestChromosome.repres).keys())))
-    print("Best solution: " + str(bestestChromosome.repres))
-    print("Best fitness: " + str(bestestChromosome.fitness))
+    print("Community evolution: ")
+    print(allCommunitiesNumbers)
 
 
 if __name__ == "__main__":
