@@ -1,6 +1,7 @@
 import warnings
 from collections import Counter
 import networkx as nx
+import networkx.algorithms.community as nx_comm
 from random import seed
 
 from lab3.GA import GA
@@ -41,14 +42,13 @@ def modularity(communities):
     noNodes = param['noNodes']
     mat = param['mat']
     degrees = param['degrees']
-    edges = param['edges']
-    m = 2 * edges
+    m = 2 * param['edges']
     q = 0.0
     for i in range(0, noNodes):
         for j in range(0, noNodes):
             if communities[i] == communities[j]:
-                q += (mat.item((i, j)) - degrees[i] * degrees[j] / m)
-    return q * 1 / m
+                q += (mat[i][j] - degrees[i] * degrees[j] / m)
+    return q * (1 / m)
 
 
 def solveGA():
@@ -63,10 +63,13 @@ def solveGA():
     ga.initialistion()
     ga.eval()
 
-    allCommunitiesNumbers = []
-    allFitnessValues = []
+    allComms = []
+    allFitnesses = []
 
+    bestestComs = 0
     bestestChromosome = Chromosome(problParam)
+    bestestChromosome.fitness = -1
+    bestestRepr = []
 
     for g in range(gaParam['noGen']):
         generations.append(g)
@@ -80,25 +83,33 @@ def solveGA():
             else:
                 communities_dict[bestChromosome.repres[i]] = [i]
 
-        allCommunitiesNumbers.append(len(communities_dict))
-        allFitnessValues.append(bestChromosome.fitness)
+        allComms.append(len(communities_dict))
+        allFitnesses.append(bestChromosome.fitness)
 
         if bestestChromosome.fitness < bestChromosome.fitness:
             bestestChromosome = bestChromosome
+            bestestRepr = bestChromosome.repres
+            bestestComs = len(communities_dict)
 
-        ga.oneGeneration()
-        # ga.oneGenerationElitism()
+        # ga.oneGeneration()
+        ga.oneGenerationElitism()
         # ga.oneGenerationSteadyState()
 
-        print('Generation: ' + str(g) + ' nr comunitati: ' + str(
+        print('Generation: ' + str(g) + ' communities: ' + str(
             len(Counter(bestChromosome.repres).items())) + ' best solution in generation = ' + str(
             bestChromosome.repres) + ' fitness = ' + str(bestChromosome.fitness))
 
     print("Fitness evolution of the best chromosome: ")
-    print(allFitnessValues)
+    print(allFitnesses)
+
+    print("Communities for the best chromosome: " + str(bestestComs))
 
     print("Community evolution: ")
-    print(allCommunitiesNumbers)
+    print(allComms)
+
+    print('Index communities for the best chromosome: ')
+    for i in range(0, len(bestestRepr)):
+        print(str(i) + ": " + str(bestestRepr[i]))
 
 
 if __name__ == "__main__":
