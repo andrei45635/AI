@@ -48,7 +48,7 @@ def modularity(communities):
         for j in range(0, noNodes):
             if communities[i] == communities[j]:
                 q += (mat[i][j] - degrees[i] * degrees[j] / m)
-    return q * (1 / m)
+    return abs(q * (1 / m))
 
 
 def solveGA():
@@ -56,7 +56,7 @@ def solveGA():
 
     seed(1)
 
-    gaParam = {'popSize': 100, 'noGen': 100}
+    gaParam = {'popSize': 100, 'noGen': 500}
     problParam = {'min': MIN, 'max': MAX, 'function': modularity, 'noNodes': MAX}
 
     ga = GA(gaParam, problParam)
@@ -91,13 +91,15 @@ def solveGA():
             bestestRepr = bestChromosome.repres
             bestestComs = len(communities_dict)
 
-        # ga.oneGeneration()
-        ga.oneGenerationElitism()
+        ga.oneGeneration()
+        # ga.oneGenerationElitism()
         # ga.oneGenerationSteadyState()
 
         print('Generation: ' + str(g) + ' communities: ' + str(
             len(Counter(bestChromosome.repres).items())) + ' best solution in generation = ' + str(
             bestChromosome.repres) + ' fitness = ' + str(bestChromosome.fitness))
+
+    print("Best chromosome fitness: ", bestestChromosome.fitness)
 
     print("Fitness evolution of the best chromosome: ")
     print(allFitnesses)
