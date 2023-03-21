@@ -9,7 +9,7 @@ from lab3.chromosome import Chromosome
 
 
 def readGML(fileName):
-    g = nx.read_gml(fileName)
+    g = nx.read_gml(fileName, label=None)
     mat = nx.to_numpy_array(g)
     net = {'noNodes': g.number_of_nodes(), 'edges': g.number_of_edges(), 'mat': mat}
 
@@ -29,10 +29,11 @@ def readGML(fileName):
 
 param = readGML('data/dolphins/dolphins.gml')
 # param = readGML('data/football/football.gml')
-# param = readGML('data/karate/karate.gml', label='id')
-# param = readGML('data/krebs/krebs.gml', label='id')
+# param = readGML('data/karate/karate.gml')
+# param = readGML('data/krebs/krebs.gml')
 # param = readGML('data/adjnoun/adjnoun.gml')
 # param = readGML('data/lesmis/lesmis.gml')
+# param = readGML('data/netscience/netscience.gml')
 
 MIN = 0
 MAX = param['noNodes']
@@ -42,7 +43,7 @@ def modularity(communities):
     noNodes = param['noNodes']
     mat = param['mat']
     degrees = param['degrees']
-    m = 2 * param['edges']
+    m = param['edges']
     q = 0.0
     for i in range(0, noNodes):
         for j in range(0, noNodes):
@@ -56,7 +57,7 @@ def solveGA():
 
     seed(1)
 
-    gaParam = {'popSize': 100, 'noGen': 500}
+    gaParam = {'popSize': 100, 'noGen': 1000}
     problParam = {'min': MIN, 'max': MAX, 'function': modularity, 'noNodes': MAX}
 
     ga = GA(gaParam, problParam)
@@ -68,7 +69,7 @@ def solveGA():
 
     bestestComs = 0
     bestestChromosome = Chromosome(problParam)
-    bestestChromosome.fitness = -1
+    bestestChromosome.fitness = 0
     bestestRepr = []
 
     for g in range(gaParam['noGen']):
