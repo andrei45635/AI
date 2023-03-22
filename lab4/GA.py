@@ -19,7 +19,7 @@ class GA:
 
     def eval(self):
         for c in self.__population:
-            c.fitness = self.__problParams['function'](c.repres)
+            c.fitness = self.__problParams['function'](self.__problParams['net']['mat'], c.repres)
 
     def bestChromosome(self):
         best = self.__population[0]
