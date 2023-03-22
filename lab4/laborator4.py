@@ -41,6 +41,7 @@ def solveGA(net):
     ga.initialistion()
     ga.eval()
 
+    allFitnesses = []
     allBestFitnesses = []
     allAvgFitnesses = []
 
@@ -66,10 +67,12 @@ def solveGA(net):
         bestSolY = ga.bestChromosome().fitness
         allBestFitnesses.append(bestSolY)
         allAvgFitnesses.append(sum(allPotentialSolutionsY) / len(allPotentialSolutionsY))
+        allFitnesses.append(bestChromosome.fitness)
 
         print('Generation: ' + str(g) + ' best solution: ' + str(bestChromosome.repres) + ' fitness: ' + str(bestChromosome.fitness))
 
     print('Best Chromosome: ', bestestChromosome.repres, 'fitness: ', bestestChromosome.fitness)
+    print('Fitness evolution: ', allFitnesses)
     plt.ioff()
     print(len(generations), len(allBestFitnesses))
     best = plt.plot(generations, allBestFitnesses, 'ro', label='best')
