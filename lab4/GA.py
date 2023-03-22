@@ -71,7 +71,7 @@ class GA:
             mother = self.__population[self.selection()]
             offspring = father.crossover(mother)
             offspring.mutation()
-            offspring.fitness = self.__problParams['function'](offspring.repres)
+            offspring.fitness = self.__problParams['function'](self.__problParams['net']['mat'], offspring.repres)
             worst = self.worstChromosome()
             if offspring.fitness < worst.fitness:
                 worst = offspring
