@@ -74,7 +74,6 @@ def solveGA(net):
     print(len(generations), len(allBestFitnesses))
     best = plt.plot(generations, allBestFitnesses, 'ro', label='best')
     mean = plt.plot(generations, allAvgFitnesses, 'bo', label='mean')
-    # plt.legend([best, (best, mean)], ['Best', 'Mean'])
     plt.show()
 
     print(bestestChromosome)
@@ -82,15 +81,9 @@ def solveGA(net):
 
 if __name__ == '__main__':
     crtDir = os.getcwd()
-    filePath = os.path.join(crtDir, 'data', 'hard_tsp1.txt')
-    nt = readFile(filePath)
-    print(nt)
+    path = os.path.join(crtDir, 'data', 'hard_tsp1.txt')
+    nt = readFile(path)
     solveGA(nt)
-    # with open (filePath, 'r') as f:
-        # n = int(f.readline())
-        # for i in range(n):
-            # foo = f.readline()
-            # print(" ".join(foo.split()))
 
 
 
