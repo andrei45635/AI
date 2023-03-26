@@ -1,4 +1,5 @@
-from random import randint
+import random
+from random import randint, uniform
 from lab4.utils.permutation import generatePermutation, generatePermsFixed
 from lab4.utils.binary_vect import generateBinaryVector
 
@@ -27,6 +28,18 @@ class Chromosome:
         self.__repres = l
 
     def crossover(self, c):
+        """
+        r = randint(0, len(self.__repres) - 1)
+        new_representation = []
+        for i in range(r):
+            new_representation.append(self.__repres[i])
+        for i in range(r, len(self.__repres)):
+            new_representation.append(c.__repres[i])
+        offspring = Chromosome(c.__params)
+        offspring.representation = new_representation
+        return offspring
+        """
+
         # order XO
         pos1 = randint(1, self.__params['noNodes'] - 1)
         pos2 = randint(1, self.__params['noNodes'] - 1)
@@ -55,14 +68,15 @@ class Chromosome:
         # newrepres = []
         # vect = generateBinaryVector(len(self.__repres))
         # for i in range(len(self.__repres)):
-            # if vect[i] == 0:
-             #   newrepres.append(self.__repres[i])
-            # else:
-                #newrepres.append(c.__repres[i])
-        #offspring = Chromosome(self.__params)
-        #offspring.__repres = newrepres
-        #return offspring
+        # if vect[i] == 0:
+        #   newrepres.append(self.__repres[i])
+        # else:
+        # newrepres.append(c.__repres[i])
+        # offspring = Chromosome(self.__params)
+        # offspring.__repres = newrepres
+        # return offspring
         # ===============================================
+
         # ========================================
         # rnd = randint(0, len(self.__repres) - 1)
         # newrepres = []
@@ -76,11 +90,17 @@ class Chromosome:
         # ========================================
 
     def mutation(self):
+
         self.repres.remove(self.__params['start'])
         self.repres.remove(self.__params['end'])
-        pos1 = randint(0, len(self.__repres) - 1)
-        pos2 = randint(0, len(self.__repres) - 1)
-        self.__repres[pos1], self.__repres[pos2] = self.__repres[pos2], self.__repres[pos1]
+        # pos1 = randint(0, len(self.__repres) - 1)
+        # pos2 = randint(0, len(self.__repres) - 1)
+        # self.__repres[pos1], self.__repres[pos2] = self.__repres[pos2], self.__repres[pos1]
+        pos = randint(0, len(self.__repres) - 1)
+        rando = randint(self.__params['min'], self.__params['max'])
+        if rando != self.__params['start'] and rando != self.__params['end']:
+            self.__repres[pos] = rando
+        self.__repres = list(dict.fromkeys(self.__repres))
         self.__repres.insert(0, self.__params['start'])
         self.__repres.insert(len(self.__repres), self.__params['end'])
 

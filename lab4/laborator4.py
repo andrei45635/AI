@@ -34,7 +34,7 @@ def solveGA(net):
     MAX = net['noNodes']
     generations = []
 
-    gaParam = {'popSize': 100, 'noGen': 3000}
+    gaParam = {'popSize': 100, 'noGen': 10000}
     problParam = {'min': MIN, 'max': MAX, 'function': fitness, 'noNodes': MAX, 'start': net['start'], 'end': net['end'], 'net': net}
 
     ga = GA(gaParam, problParam)
@@ -84,7 +84,7 @@ def solveGA(net):
 
 if __name__ == '__main__':
     crtDir = os.getcwd()
-    path = os.path.join(crtDir, 'data', 'medium_tsp1.txt')
+    path = os.path.join(crtDir, 'data', 'hard_tsp1.txt')
     nt = readFile(path)
     solveGA(nt)
 
