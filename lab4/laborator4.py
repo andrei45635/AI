@@ -3,8 +3,9 @@ import os
 from matplotlib import pyplot as plt
 
 from lab4.GA import GA
+# from lab4.chromosome1 import Chromosome
 from lab4.chromosome import Chromosome
-from lab4.utils.fitness import fitness
+from lab4.utils.fitness import fitness, fitCyclic
 
 
 def readFile(filePath):
@@ -35,7 +36,8 @@ def solveGA(net):
     generations = []
 
     gaParam = {'popSize': 100, 'noGen': 10000}
-    problParam = {'min': MIN, 'max': MAX, 'function': fitness, 'noNodes': MAX, 'start': net['start'], 'end': net['end'], 'net': net}
+    problParam = {'min': MIN, 'max': MAX, 'function': fitCyclic, 'noNodes': MAX, 'start': net['start'], 'end': net['end'], 'net': net}
+    # problParam = {'min': MIN, 'max': MAX, 'function': fitness, 'noNodes': MAX, 'net': net}
 
     ga = GA(gaParam, problParam)
     ga.initialistion()
