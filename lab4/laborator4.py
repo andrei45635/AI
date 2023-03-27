@@ -35,8 +35,8 @@ def solveGA(net):
     MAX = net['noNodes']
     generations = []
 
-    gaParam = {'popSize': 100, 'noGen': 10000}
-    problParam = {'min': MIN, 'max': MAX, 'function': fitCyclic, 'noNodes': MAX, 'start': net['start'], 'end': net['end'], 'net': net}
+    gaParam = {'popSize': 100, 'noGen': 1000}
+    problParam = {'min': MIN, 'max': MAX, 'function': fitness, 'noNodes': MAX, 'start': net['start'], 'end': net['end'], 'net': net}
     # problParam = {'min': MIN, 'max': MAX, 'function': fitness, 'noNodes': MAX, 'net': net}
 
     ga = GA(gaParam, problParam)

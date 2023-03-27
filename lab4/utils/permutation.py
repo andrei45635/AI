@@ -16,5 +16,6 @@ def generatePermsFixed(n, start, end):
     perm.remove(end)
     random.shuffle(perm)
     perm.insert(0, start)
-    perm.insert(n, end)
+    perm.append(end)
+    # perm.insert(n, end)
     return perm

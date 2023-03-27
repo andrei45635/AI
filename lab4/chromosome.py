@@ -7,11 +7,11 @@ from lab4.utils.binary_vect import generateBinaryVector
 class Chromosome:
     def __init__(self, params=None):
         self.__params = params
-        self.__repres = []
-        # self.__repres = generatePermsFixed(self.__params['noNodes'], self.__params['start'], self.__params['end'])
+        # self.__repres = []
+        self.__repres = generatePermsFixed(self.__params['noNodes'], self.__params['start'], self.__params['end'])
         # self.__repres = generatePermutation(self.__params['noNodes'])
         self.__fitness = 0.0
-        self._init_repres()
+        # self._init_repres()
 
     @property
     def fitness(self):
@@ -130,12 +130,12 @@ class Chromosome:
         # self.__repres[pos1], self.__repres[pos2] = self.__repres[pos2], self.__repres[pos1]
         pos = randint(0, len(self.__repres) - 1)
         rando = randint(self.__params['min'], self.__params['max'])
-        if rando != self.__params['start'] and rando != self.__params['end']:
-            self.__repres[pos] = rando
+        while rando == self.__params['start'] and rando == self.__params['end']:
+            rando = randint(self.__params['min'], self.__params['max'])
+        self.__repres[pos] = rando
         self.__repres = list(dict.fromkeys(self.__repres))
         self.__repres.insert(0, self.__params['start'])
         self.__repres.insert(len(self.__repres), self.__params['end'])
-
 
     def __str__(self):
         return '\nChromo: ' + str(self.__repres) + ' has fit: ' + str(self.__fitness)
