@@ -92,7 +92,7 @@ def solveGA(net):
     best = plt.plot(generations, allBestFitnesses, 'ro', label='best')
     mean = plt.plot(generations, allAvgFitnesses, 'bo', label='mean')
     plt.show()
-
+    #a
     print(bestestChromosome)
 
 
