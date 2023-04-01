@@ -1,5 +1,6 @@
 import csv
 
+import numpy as np
 from matplotlib import pyplot as plt
 
 
@@ -10,6 +11,47 @@ def readFromCSV(fileName):
         for row in csvreader:
             dt += [row]
         return dt
+
+
+def readTxt(fileName):
+    with open(fileName, 'r') as f:
+        lines = f.readlines()
+        real = []
+        predicted = []
+        for line in lines:
+            real += [int(line.strip()[0])]
+            predicted += [int(line.strip()[2])]
+        return real, predicted
+
+
+def readFile(fileName):
+    with open(fileName) as f:
+        real = []
+        predicted = []
+        for line in f.readlines():
+            real += [float(line.strip().split()[0])]
+            predicted += [float(line.strip().split()[1])]
+        return real, predicted
+
+
+def readMultiClass(fileName):
+    with open(fileName) as f:
+        realProbs = []
+        for line in f.readlines():
+            probs = list(map(float, line.strip().split()))
+            realProbs += probs
+        subList1 = [realProbs[n:n + 3] for n in range(0, len(realProbs), 3)]
+        return np.array(subList1, dtype=float)
+
+
+def readMultiTarget(fileName):
+    with open(fileName) as f:
+        realProbs = []
+        for line in f.readlines():
+            probs = list(map(float, line.strip().split()))
+            realProbs += probs
+        subList1 = [realProbs[n:n + 5] for n in range(0, len(realProbs), 5)]
+        return np.array(subList1, dtype=float)
 
 
 def plotRegression(subList, subListP):
