@@ -1,6 +1,6 @@
 from random import randint
-from lab4.chromosome import Chromosome
-# from lab4.chromosome1 import Chromosome
+# from lab4.chromosome import Chromosome
+from lab4.chromosome1 import Chromosome
 
 
 class GA:

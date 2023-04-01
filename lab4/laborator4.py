@@ -1,11 +1,16 @@
 import os
 
 from matplotlib import pyplot as plt
-
+from tsplib95 import loaders
 from lab4.GA import GA
-# from lab4.chromosome1 import Chromosome
-from lab4.chromosome import Chromosome
+from lab4.chromosome1 import Chromosome
+# from lab4.chromosome import Chromosome
 from lab4.utils.fitness import fitness, fitCyclic
+
+
+def readTSP(filePath):
+    tsp = loaders.load(filePath)
+    print(tsp)
 
 
 def readFile(filePath):
@@ -35,9 +40,9 @@ def solveGA(net):
     MAX = net['noNodes']
     generations = []
 
-    gaParam = {'popSize': 100, 'noGen': 10000}
-    problParam = {'min': MIN, 'max': MAX, 'function': fitCyclic, 'noNodes': MAX, 'start': net['start'], 'end': net['end'], 'net': net}
-    # problParam = {'min': MIN, 'max': MAX, 'function': fitness, 'noNodes': MAX, 'net': net}
+    gaParam = {'popSize': 100, 'noGen': 25000}
+    # problParam = {'min': MIN, 'max': MAX, 'function': fitness, 'noNodes': MAX, 'start': net['start'], 'end': net['end'], 'net': net}
+    problParam = {'min': MIN, 'max': MAX, 'function': fitness, 'noNodes': MAX, 'net': net}
 
     ga = GA(gaParam, problParam)
     ga.initialistion()
@@ -46,6 +51,7 @@ def solveGA(net):
     allFitnesses = []
     allBestFitnesses = []
     allAvgFitnesses = []
+    bestsFits = []
 
     bestestChromosome = Chromosome(problParam)
     bestestChromosome.fitness = 99999999
@@ -54,6 +60,7 @@ def solveGA(net):
         generations.append(g)
 
         bestChromosome = ga.bestChromosome()
+        last_pops = ga.population
 
         # ga.oneGeneration()
         ga.oneGenerationElitism()
@@ -62,6 +69,10 @@ def solveGA(net):
         if bestestChromosome.fitness > bestChromosome.fitness:
             bestestChromosome.repres = bestChromosome.repres
             bestestChromosome.fitness = bestChromosome.fitness
+
+        for gen in last_pops:
+            if gen.fitness == bestestChromosome.fitness and gen not in bestsFits:
+                bestsFits.append(gen)
 
         allPotentialSolutionsX = [c.repres for c in ga.population]
         allPotentialSolutionsY = [c.fitness for c in ga.population]
@@ -75,12 +86,13 @@ def solveGA(net):
 
     print('Best Chromosome: ', bestestChromosome.repres, 'fitness: ', bestestChromosome.fitness)
     print('Fitness evolution: ', allFitnesses)
+    print('Best solution: ', bestsFits)
     plt.ioff()
     print(len(generations), len(allBestFitnesses))
     best = plt.plot(generations, allBestFitnesses, 'ro', label='best')
     mean = plt.plot(generations, allAvgFitnesses, 'bo', label='mean')
     plt.show()
-
+    #a
     print(bestestChromosome)
 
 
@@ -88,6 +100,7 @@ if __name__ == '__main__':
     crtDir = os.getcwd()
     path = os.path.join(crtDir, 'data', 'hard_tsp1.txt')
     nt = readFile(path)
+    # readTSP(path)
     solveGA(nt)
 
 
