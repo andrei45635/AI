@@ -54,14 +54,39 @@ def readMultiTarget(fileName):
         return np.array(subList1, dtype=float)
 
 
-def plotRegression(subList, subListP):
+def getSubLists(outputs):
+    real = []
+    predicted = []
+    for item in outputs:
+        for i in range(3):
+            real += [int(item[i])]
+        for j in range(3, len(item)):
+            predicted += [int(item[j])]
+
+    subList = [real[n:n + 3] for n in range(0, len(real), 3)]
+    subListP = [predicted[n:n + 3] for n in range(0, len(predicted), 3)]
+    return subList, subListP
+
+
+def getRealValues(subList):
     realWeights = [w[0] for w in subList]
     realWaist = [w[1] for w in subList]
     realPulse = [w[2] for w in subList]
 
+    return realWeights, realWaist, realPulse
+
+
+def getPredictedValues(subListP):
     predictedWeights = [pw[0] for pw in subListP]
     predictedWaist = [pw[1] for pw in subListP]
     predictedPulse = [pw[2] for pw in subListP]
+
+    return predictedWeights, predictedWaist, predictedPulse
+
+
+def plotRegression(subList, subListP):
+    realWeights, realWaist, realPulse = getRealValues(subList)
+    predictedWeights, predictedWaist, predictedPulse = getPredictedValues(subListP)
 
     indexesW = [i for i in range(len(realWeights))]
     indexesWs = [i for i in range(len(realWaist))]
@@ -78,20 +103,3 @@ def plotRegression(subList, subListP):
     plt.legend([realW, realWs, realP, (realW, realWs, realP, predictedW, predictedWs, predictedP)],
                ["Real", "Predicted"])
     plt.show()
-
-
-'''
-        errorL1_weights = sum(abs(r - p) for r, p in zip(realWeights, predictedWeights)) / len(realWeights)
-        errorL1_waists = sum(abs(r - p) for r, p in zip(realWaist, predictedWaist)) / len(realWaist)
-        errorL1_pulses = sum(abs(r - p) for r, p in zip(realPulse, predictedPulse)) / len(realPulse)
-        print('errorL1_weights: ', errorL1_weights)
-        print('errorL1_waists: ', errorL1_waists)
-        print('errorL1_pulses: ', errorL1_pulses)
-
-        errorL2_weights = sqrt(sum((r - p) ** 2for r, p in zip(realWeights, predictedWeights)) / len(realWeights))
-        errorL2_waists = sqrt(sum((r - p) ** 2 for r, p in zip(realWaist, predictedWaist)) / len(realWaist))
-        errorL2_pulses = sqrt(sum((r - p) ** 2 for r, p in zip(realPulse, predictedPulse)) / len(realPulse))
-        print('errorL2_weights: ', errorL2_weights)
-        print('errorL2_waists: ', errorL2_waists)
-        print('errorL2_pulses: ', errorL2_pulses)
-'''

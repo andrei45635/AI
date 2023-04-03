@@ -1,12 +1,21 @@
 from lab5.classification import classificationV1, getRealPredictedLabels, classificationV2, lossClassification, lossV2, \
     multiClassLoss, multiTargetLoss
-from lab5.regression import regression
+from lab5.regression import regression, regressionV2
 from lab5.utils import readFromCSV, readTxt, readFile, readMultiClass, readMultiTarget
 
 if __name__ == '__main__':
 
     sports = readFromCSV('data/sport.csv')
     sports.pop(0)
+    errorL1_weights, errorL1_waists, errorL1_pulses, errorL2_weights, errorL2_waists, errorL2_pulses = regressionV2(sports)
+    print('errorL1_weights: ', errorL1_weights)
+    print('errorL1_waists: ', errorL1_waists)
+    print('errorL1_pulses: ', errorL1_pulses)
+
+    print('errorL2_weights: ', errorL2_weights)
+    print('errorL2_waists: ', errorL2_waists)
+    print('errorL2_pulses: ', errorL2_pulses)
+
     mae, rmse = regression(sports)
     print("Mean Absolute Error: ", mae)
     print("Root Mean Square Error: ", rmse)

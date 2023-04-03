@@ -1,20 +1,10 @@
 from numpy import sqrt
 
-from lab5.utils import plotRegression
+from lab5.utils import plotRegression, getSubLists, getRealValues, getPredictedValues
 
 
 def regression(outputs):
-    real = []
-    predicted = []
-    for item in outputs:
-        for i in range(3):
-            real += [int(item[i])]
-        for j in range(3, len(item)):
-            predicted += [int(item[j])]
-
-    subList = [real[n:n + 3] for n in range(0, len(real), 3)]
-    subListP = [predicted[n:n + 3] for n in range(0, len(predicted), 3)]
-
+    subList, subListP = getSubLists(outputs)
     plotRegression(subList, subListP)
 
     mae = 0
@@ -24,3 +14,19 @@ def regression(outputs):
         rmse += sqrt(sum((r - p) ** 2 for r, p in zip(real, predicted)) / len(real))
 
     return mae / len(subList), rmse / len(subList)
+
+
+def regressionV2(outputs):
+    subList, subListP = getSubLists(outputs)
+    realWeights, realWaist, realPulse = getRealValues(subList)
+    predictedWeights, predictedWaist, predictedPulse = getPredictedValues(subListP)
+
+    errorL1_weights = sum(abs(r - p) for r, p in zip(realWeights, predictedWeights)) / len(realWeights)
+    errorL1_waists = sum(abs(r - p) for r, p in zip(realWaist, predictedWaist)) / len(realWaist)
+    errorL1_pulses = sum(abs(r - p) for r, p in zip(realPulse, predictedPulse)) / len(realPulse)
+
+    errorL2_weights = sqrt(sum((r - p) ** 2 for r, p in zip(realWeights, predictedWeights)) / len(realWeights))
+    errorL2_waists = sqrt(sum((r - p) ** 2 for r, p in zip(realWaist, predictedWaist)) / len(realWaist))
+    errorL2_pulses = sqrt(sum((r - p) ** 2 for r, p in zip(realPulse, predictedPulse)) / len(realPulse))
+
+    return errorL1_weights, errorL1_waists, errorL1_pulses, errorL2_weights, errorL2_waists, errorL2_pulses
