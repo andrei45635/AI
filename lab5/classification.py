@@ -23,15 +23,18 @@ def classificationV1(real, predicted, labelNames):
 def classificationV2(real, predicted, labelNames):
     acc = sum([1 if real[i] == predicted[i] else 0 for i in range(len(real))]) / len(real)
     TP, TN, FP, FN = 0, 0, 0, 0
-
+    precisionPos, recallPos = 0, 0
     for label in labelNames:
         TP = sum([1 if real[i] == label and predicted[i] == label else 0 for i in range(len(real))]) / len(real)
         TN = sum([1 if real[i] != label and predicted[i] != label else 0 for i in range(len(real))]) / len(real)
         FP = sum([1 if real[i] != label and predicted[i] == label else 0 for i in range(len(real))]) / len(real)
         FN = sum([1 if real[i] == label and predicted[i] != label else 0 for i in range(len(real))]) / len(real)
-
-    precisionPos = TP / (TP + FP)
-    recallPos = TP / (TP + FN)
+        precisionPos = TP / (TP + FP)
+        recallPos = TP / (TP + FN)
+        print(label, precisionPos)
+        print(label, recallPos)
+    # precisionPos = TP / (TP + FP)
+    # recallPos = TP / (TP + FN)
     precisionNeg = TN / (TN + FN)
     recallNeg = TN / (TN + FP)
     return acc, precisionPos, precisionNeg, recallPos, recallNeg
