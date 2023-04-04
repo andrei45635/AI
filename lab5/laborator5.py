@@ -41,7 +41,7 @@ if __name__ == '__main__':
     real, predicted = readTxt(trueBinary)
     loss = lossClassification(real, predicted)
     loss1 = lossV2(real, predicted, r1, p1)
-    print('Loss for the binary classification', probBinary, trueBinary, 'is', loss, loss1)
+    print('Loss for the binary classification', probBinary, trueBinary, 'is', loss1)
 
     probMultiClass = 'data/probabilities-multi-class.txt'
     trueMultiClass = 'data/true-multi-class.txt'

@@ -42,9 +42,8 @@ def classificationV2(real, predicted, labelNames):
 
 def lossClassification(real, predicted):
     """
-    Formula for the binary cross-entropy loss function with added epsilon to avoid taking the logarithm of 0:
+    Formula for the binary cross-entropy loss function
         -> L = -[y * log(p + epsilon) + (1-y) * log(1-p + epsilon)]
-    where epsilon is a small positive value (e.g., 1e-10).
     """
     entropy = 0
     epsilon = np.finfo(np.float32).eps
@@ -55,15 +54,19 @@ def lossClassification(real, predicted):
 
 def lossV2(real, predicted, realProb, predictedProb):
     entropy = 0
-    for rProb, pProb, in zip(realProb, predictedProb):
+    for rProb, pProb in zip(realProb, predictedProb):
         for rl, pd in zip(real, predicted):
             entropy += -(rl * log(pProb) + (1 - rl) * log(1 - pProb))
+    entropy1 = 0
+    for rl, pProb in zip(real, predictedProb):
+        entropy1 += -(rl * log(pProb) + (1 - rl) * log(1 - pProb))
+    # print(entropy1/len(real))
     return entropy / len(real)
 
 
 def multiClassLoss(probArr, predArr):
     """
-    The formula for the categorical cross-entropy loss for a single example is:
+    The formula for the categorical cross-entropy loss is:
     L = -∑(y_true * log(y_pred))
     where:
         -> y_true is a one-hot encoded vector representing the true class label (i.e., a vector with a 1 in the position corresponding to the true class and 0s elsewhere)
@@ -75,7 +78,7 @@ def multiClassLoss(probArr, predArr):
 
 def multiTargetLoss(probArr, predArr):
     """
-    The formula for the binary cross-entropy loss for a single example is:
+    The formula for the binary cross-entropy loss is:
         -> L = -∑(y_true * log(y_pred) + (1-y_true) * log(1-y_pred))
     where:
         -> y_true is a binary vector representing the true labels (i.e., a vector with 1s in the positions corresponding to the true labels and 0s elsewhere)
