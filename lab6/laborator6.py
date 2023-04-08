@@ -3,9 +3,9 @@ from sklearn.metrics import mean_squared_error
 
 from lab6.regression.my_regression import my_regression
 from lab6.regression.sk_learn_regression import sk_learnRegression
-from lab6.regression.data_division import divideData
+from lab6.utils.data_division import divideData
 from lab6.utils.plotters import plotGDP, plotFreedom, plotDataHistogram, plotAll, plotSplitData
-from lab6.utils.reader import loadData, loadAsDF
+from lab6.utils.reader import loadAsDF
 
 if __name__ == '__main__':
     crtDir = os.getcwd()
