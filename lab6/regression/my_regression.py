@@ -56,5 +56,5 @@ def my_regression(gdp, freedom, happiness):
     happiness_matrix = [[el] for el in happiness]
     res = multiplyMatrices(second_mp, happiness_matrix)
     w0, w1, w2 = res[0][0], res[1][0], res[2][0]
-    modelstr = 'the learnt model: f(x) = ' + str(w0) + ' + ' + str(w1) + ' * x1' + ' + ' + str(w2) + ' * x2'
+    modelstr = 'the learnt model: f(x1, x2) = ' + str(w0) + ' + ' + str(w1) + ' * x1' + ' + ' + str(w2) + ' * x2'
     return modelstr
