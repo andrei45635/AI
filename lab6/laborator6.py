@@ -9,7 +9,7 @@ from lab6.utils.reader import loadAsDF, loadData, correlatedDF
 
 if __name__ == '__main__':
     crtDir = os.getcwd()
-    filePath = os.path.join(crtDir, 'data', 'v3_world-happiness-report-2017.csv')
+    filePath = os.path.join(crtDir, 'data', 'v1_world-happiness-report-2017.csv')
     gdp, freedom, happiness = loadAsDF(filePath)
     # gdp1, freedom1, happiness1 = loadData(filePath, 'Economy..GDP.per.Capita.', 'Freedom', 'Happiness.Score')
     mdl = my_regression(gdp, freedom, happiness)
