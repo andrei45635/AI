@@ -40,7 +40,7 @@ def myUnivariable(fp):
 
 
 def myMultivariable(fp):
-    gdp, happiness, freedom = loadAsDFMultivar(fp)
+    gdp, freedom, happiness = loadAsDFMultivar(fp)
     trainInputs, trainOutputs, validationInputs, validationOutputs, gdpTrainInputs, freedomTrainInputs, happinessTrainOutputs, gdpTestOutputs, freedomTestOutputs, happinessTestOutputs = divideMultivariable(
         gdp, freedom, happiness)
     normalisation(gdpTrainInputs, freedomTrainInputs, happinessTrainOutputs, gdpTestOutputs, freedomTestOutputs,
