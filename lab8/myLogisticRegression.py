@@ -19,7 +19,7 @@ class MyLogisticRegression:
         self.intercept_ = []
         self.coef_ = []
 
-    def fit(self, x, y, learningRate=0.001, noEpochs=1000):
+    def fit(self, x, y, learningRate=0.002, noEpochs=1000):
         self.coef_ = []
         labels = np.unique(y)
         for label in range(len(labels)):

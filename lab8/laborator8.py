@@ -7,6 +7,7 @@ from lab8.myLogisticRegression import MyLogisticRegression
 from lab8.normalisation import normalisation
 from lab8.utils.plotters import plotInputs, plotPredictionsSepals, plotPredictionsPetals
 
+
 if __name__ == '__main__':
     data = load_iris()
     inputs = data['data']
@@ -48,12 +49,11 @@ if __name__ == '__main__':
     feature4test = [ex[3] for ex in testInputs]
 
     plotInputs(outputNames, trainOutputs, trainInputs, feature1train, feature2train, feature3train, feature4train, 'normalised data')
-
     print('Classification models: (using tool)\n')
     labels = [label for label in set(outputs)]
     classifier = linear_model.LogisticRegression()
     classifier.fit(trainInputs, trainOutputs)
-    print(classifier.intercept_)
+
     w0, w1, w2, w3, w4 = classifier.intercept_, [classifier.coef_[_][0] for _ in range(len(labels))], [
         classifier.coef_[_][1] for _ in
         range(len(labels))], [classifier.coef_[_][2]
@@ -84,7 +84,6 @@ if __name__ == '__main__':
     labels = [label for label in set(outputs)]
     classifier = MyLogisticRegression()
     classifier.fit(trainInputs, trainOutputs)
-
     w0, w1, w2, w3, w4 = classifier.intercept_, [classifier.coef_[2][0] for _ in range(len(labels))], [
         classifier.coef_[2][1] for _ in
         range(len(labels))], [classifier.coef_[2][2]
