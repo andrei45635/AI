@@ -36,3 +36,21 @@ def normalize(list):
         scalar = scale(list[i])
         normalized_list.append(scalar)
     return normalized_list
+
+
+def normalisationCNN(trainData, testData):
+    trainInputs, trainOutputs, testInputs, testOutputs = [], [], [], []
+    for feat, label in trainData:
+        trainInputs.append(feat)
+        trainOutputs.append(label)
+    for feat, label in testData:
+        testInputs.append(feat)
+        testOutputs.append(label)
+
+    trainInputs = np.array(trainInputs) / 255.0
+    testInputs = np.array(testInputs) / 255.0
+    trainInputs.reshape(-1, 64, 64, 1)
+    trainOutputs = np.array(trainOutputs) / 255.0
+    testOutputs = np.array(testOutputs) / 255.0
+    testInputs.reshape(-1, 64, 64, 1)
+    return trainInputs, trainOutputs, testInputs, testOutputs

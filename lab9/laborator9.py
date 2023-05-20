@@ -1,45 +1,21 @@
+from keras.layers import Dropout
+from tensorflow.python.keras.losses import SparseCategoricalCrossentropy
+from tensorflow.python.keras.layers import MaxPool2D, Flatten, Dense, Conv2D
+from tensorflow.python.keras import Sequential
+
 import numpy as np
 from matplotlib import pyplot as plt
 
 from lab9.digits_ANN.load_data import loadDigitData
-from lab9.digits_ANN.normalisation import normalisation, normalize
+from lab9.sepia_ANN.split_data import trainTestCNN
+from lab9.utils.normalisation import normalisation, normalisationCNN
 from lab9.digits_ANN.split_data import splitData
 from sklearn import neural_network
-from sklearn.metrics import confusion_matrix
 
 from lab9.iris_ANN.iris import loadIris
-from lab9.sepia_ANN.load_pics import loadPics
-
-
-def flatten(mat):
-    x = []
-    for line in mat:
-        for el in line:
-            x.append(el)
-    return x
-
-
-def flatten1(mat):
-    x = []
-    for line in mat:
-        for el in line:
-            for k in el:
-                x.append(k)
-    return x
-
-
-def evalMultiClass(realLabels, computedLabels, labels):
-    print(labels)
-    print(realLabels)
-    confusion = confusion_matrix(realLabels, computedLabels)
-    accr = sum([confusion[i][i] for i in range(len(labels))]) / len(realLabels)
-    precision = {}
-    rcl = {}
-    for i in range(len(labels)):
-        print('cc', confusion[i][i])
-        precision[labels[i]] = confusion[i][i] / sum([confusion[j][i] for j in range(len(labels))])
-        rcl[labels[i]] = confusion[i][i] / sum([confusion[i][j] for j in range(len(labels))])
-    return accr, precision, rcl, confusion
+from lab9.sepia_ANN.load_pics import loadPics, loadPictures
+from lab9.utils.eval import evalMultiClass, flatten
+from lab9.utils.plot_cm import plot_confusion_matrix
 
 
 def digits():
@@ -86,32 +62,60 @@ def digits():
 def filters():
     inputs, outputs, labels = loadPics()
     trainInputs, trainOutputs, testInputs, testOutputs = splitData(inputs, outputs)
-    print(len(trainInputs), len(trainOutputs))
-    trainInputsFlattened = [flatten1(el) for el in trainInputs]
-    testInputsFlattened = [flatten1(el) for el in testInputs]
+    trainIns = []
+    for i in trainInputs:
+        if i.shape != (388800,):
+            continue
+        trainIns.append(i.reshape((388800,)))
 
-    normalisedTrainData = normalize(trainInputsFlattened)
-    normalisedTestData = normalize(testInputsFlattened)
+    trainInputs = np.array(trainIns)
+    trainOutputs = np.array(trainOutputs)
+    testInputs = np.array(testInputs)
+    testOutputs = np.array(testOutputs)
 
-    classifier = neural_network.MLPClassifier(hidden_layer_sizes=(5,), activation='relu', max_iter=200,
-                                              solver='sgd',
-                                              verbose=10, random_state=1, learning_rate_init=.1)
+    classifier = neural_network.MLPClassifier(hidden_layer_sizes=(12, 25, 12), max_iter=10000)
 
-    classifier.fit(normalisedTrainData, trainOutputs)
-    predictedLabels = classifier.predict(normalisedTestData)
+    classifier.fit(trainInputs, trainOutputs)
+    predictedLabels = classifier.predict(testInputs)
     acc, prec, recall, cm = evalMultiClass(np.array(testOutputs), predictedLabels, labels)
 
     print('acc: ', acc)
     print('precision: ', prec)
     print('recall: ', recall)
+    plot_confusion_matrix(cm, labels, 'Sepia ANN')
+
+
+def filtersCNN():
+    data = loadPictures('C:\\Users\\GIGABYTE\\OneDrive\\Desktop\\Facultate\\Semestrul 4\\AI\\lab2\\lab9\\sepia_ANN\\images', 64)
+    train, test = trainTestCNN(data)
+    trainInputs, trainOutputs, testInputs, testOutputs = normalisationCNN(train, test)
+
+    model = Sequential()
+    model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(64, 64, 3)))
+    model.add(MaxPool2D())
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPool2D())
+    model.add(Dropout(0.4))
+    model.add(Flatten())
+    model.add(Dense(2, activation='softmax'))
+    model.compile(optimizer='adam',
+                  loss=SparseCategoricalCrossentropy(from_logits=True),
+                  metrics=['accuracy'])
+    model.fit(trainInputs, trainOutputs, epochs=50, validation_data=(testInputs, testOutputs))
+    computed = model.predict(x=testInputs)
+    computed = [list(elem).index(max(list(elem))) for elem in computed]
+    testOutputs = np.where(testOutputs >= 0.0, 1, 0)
+    acc, prec, recall, cm = evalMultiClass(testOutputs, computed, ['!Sepia', 'Sepia'])
+    plot_confusion_matrix(cm, ['!Sepia', 'Sepia'], 'Sepia CNN')
 
 
 def iris():
     nn = loadIris()
 
 
-
 if __name__ == '__main__':
     # digits()
     # filters()
-    iris()
+    filtersCNN()
+    # iris()
+    print('Hello World!')

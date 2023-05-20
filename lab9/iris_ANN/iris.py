@@ -44,6 +44,7 @@ def loadIris():
     aa = neuralNetwork(trainInputs, trainOutputs, testInputs, testOutputs, epochs=E, nodes=layers, learningRate=L)
     return aa
 
+
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
