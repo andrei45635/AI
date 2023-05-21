@@ -19,11 +19,11 @@ def loadPics():
     inputs, outputs = [], []
     labels = ['!Sepia', 'Sepia']
 
-    for file in glob.iglob('C:\\Users\\GIGABYTE\\OneDrive\\Desktop\\Facultate\\Semestrul 4\\AI\\lab2\\lab9\\sepia_ANN\\images\\non_sepia\\*'):
+    for file in glob.iglob('C:\\Users\\GIGABYTE\\OneDrive\\Desktop\\Facultate\\Semestrul 4\\AI\\lab2\\lab9\\sepia_ANN\\data\\original\\*'):
         inputs.append(procImg(file))
         outputs.append(0)
 
-    for file in glob.iglob('C:\\Users\\GIGABYTE\\OneDrive\\Desktop\\Facultate\\Semestrul 4\\AI\\lab2\\lab9\\sepia_ANN\\images\\sepia\\*'):
+    for file in glob.iglob('C:\\Users\\GIGABYTE\\OneDrive\\Desktop\\Facultate\\Semestrul 4\\AI\\lab2\\lab9\\sepia_ANN\\data\\sepia\\*'):
         inputs.append(procImg(file))
         outputs.append(1)
 
@@ -31,7 +31,7 @@ def loadPics():
 
 
 def loadPictures(directory, img_size):
-    outputNames = ['non_sepia', 'sepia']
+    outputNames = ['original', 'sepia']
     data = []
     for label in outputNames:
         path = os.path.join(directory, label)

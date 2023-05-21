@@ -50,7 +50,7 @@ def normalisationCNN(trainData, testData):
     trainInputs = np.array(trainInputs) / 255.0
     testInputs = np.array(testInputs) / 255.0
     trainInputs.reshape(-1, 64, 64, 1)
-    trainOutputs = np.array(trainOutputs) / 255.0
-    testOutputs = np.array(testOutputs) / 255.0
+    trainOutputs = np.array(trainOutputs)
+    testOutputs = np.array(testOutputs)
     testInputs.reshape(-1, 64, 64, 1)
     return trainInputs, trainOutputs, testInputs, testOutputs

@@ -4,59 +4,46 @@ from tensorflow.python.keras.layers import MaxPool2D, Flatten, Dense, Conv2D
 from tensorflow.python.keras import Sequential
 
 import numpy as np
-from matplotlib import pyplot as plt
 
-from lab9.digits_ANN.load_data import loadDigitData
-from lab9.sepia_ANN.split_data import trainTestCNN
-from lab9.utils.normalisation import normalisation, normalisationCNN
-from lab9.digits_ANN.split_data import splitData
+from lab9.utils.load_data import loadDigitData, loadFlowersData
+from lab9.neural_network.evaluations import predictByTool, predictByMe, evaluate
+from lab9.neural_network.normalisation import normalisation, normalisationCNN
+from lab9.utils.split_data import splitData, splitDataCNN
 from sklearn import neural_network
 
-from lab9.iris_ANN.iris import loadIris
 from lab9.sepia_ANN.load_pics import loadPics, loadPictures
-from lab9.utils.eval import evalMultiClass, flatten
+from lab9.utils.flatteners import flattenData
 from lab9.utils.plot_cm import plot_confusion_matrix
 
 
 def digits():
     inputs, outputs, outputNames = loadDigitData()
     trainInputs, trainOutputs, testInputs, testOutputs = splitData(inputs, outputs)
+    trainInputs, testInputs = flattenData(trainInputs, testInputs)
+    trainInputs, testInputs = normalisation(trainInputs, testInputs)
+    computedOutputs = predictByTool(trainInputs, trainOutputs, testInputs, testOutputs)
+    print('Computed:', list(computedOutputs))
+    print('Real:    ', testOutputs)
+    computedOutputsByMe = predictByMe(trainInputs, trainOutputs, testInputs)
+    print('Computed by me:', computedOutputsByMe)
+    print('Real:          ', testOutputs)
+    confusion_matrix_by_me = evaluate(np.array(testOutputs), np.array(computedOutputsByMe), outputNames, division=36)
+    plot_confusion_matrix(confusion_matrix_by_me, outputNames, "Digits classification by me")
 
-    trainInputsFlattened = [flatten(el) for el in trainInputs]
-    testInputsFlattened = [flatten(el) for el in testInputs]
 
-    normalisedTrainData, normalisedTestData = normalisation(trainInputsFlattened, testInputsFlattened)
-
-    classifier = neural_network.MLPClassifier(hidden_layer_sizes=(5,), activation='relu', max_iter=100,
-                                              solver='sgd',
-                                              verbose=10, random_state=1, learning_rate_init=.1)
-
-    classifier.fit(normalisedTrainData, trainOutputs)
-    predictedLabels = classifier.predict(normalisedTestData)
-    acc, prec, recall, cm = evalMultiClass(np.array(testOutputs), predictedLabels, outputNames)
-
-    print('acc: ', acc)
-    print('precision: ', prec)
-    print('recall: ', recall)
-
-    # plot first 50 test images and their real and computed labels
-    n = 10
-    m = 5
-    fig, axes = plt.subplots(n, m, figsize=(7, 7))
-    fig.tight_layout()
-    for i in range(0, n):
-        for j in range(0, m):
-            axes[i][j].imshow(testInputs[m * i + j])
-            if testOutputs[m * i + j] == predictedLabels[m * i + j]:
-                font = 'normal'
-            else:
-                font = 'bold'
-            axes[i][j].set_title(
-                'real ' + str(testOutputs[m * i + j]) + '\npredicted ' + str(predictedLabels[m * i + j]),
-                fontweight=font)
-            axes[i][j].set_axis_off()
-
-    plt.show()
+def iris():
+    inputs, outputs, outputNames, feature1, feature2, feature3, feature4, featureNames = loadFlowersData()
+    trainInputs, trainOutputs, testInputs, testOutputs = splitData(inputs, outputs)
+    trainInputs, testInputs = normalisation(trainInputs, testInputs)
+    computedOutputs = predictByTool(trainInputs, trainOutputs, testInputs, testOutputs)
+    print('Computed:', list(computedOutputs))
+    print('Real:    ', testOutputs)
+    print()
+    computedOutputsByMe = predictByMe(trainInputs, trainOutputs, testInputs)
+    print('Computed by me:', computedOutputsByMe)
+    print('Real:          ', testOutputs)
+    confusion_matrix_by_me = evaluate(np.array(testOutputs), np.array(computedOutputsByMe), outputNames, division=10)
+    plot_confusion_matrix(confusion_matrix_by_me, outputNames, "Iris classification by me")
 
 
 def filters():
@@ -77,7 +64,7 @@ def filters():
 
     classifier.fit(trainInputs, trainOutputs)
     predictedLabels = classifier.predict(testInputs)
-    acc, prec, recall, cm = evalMultiClass(np.array(testOutputs), predictedLabels, labels)
+    acc, prec, recall, cm = evaluate(np.array(testOutputs), predictedLabels, labels, division=10)
 
     print('acc: ', acc)
     print('precision: ', prec)
@@ -86,8 +73,9 @@ def filters():
 
 
 def filtersCNN():
-    data = loadPictures('C:\\Users\\GIGABYTE\\OneDrive\\Desktop\\Facultate\\Semestrul 4\\AI\\lab2\\lab9\\sepia_ANN\\images', 64)
-    train, test = trainTestCNN(data)
+    data = loadPictures('C:\\Users\\GIGABYTE\\OneDrive\\Desktop\\Facultate\\Semestrul 4\\AI\\lab2\\lab9\\sepia_ANN\\data', 64)
+    print(data)
+    train, test, = splitDataCNN(data)
     trainInputs, trainOutputs, testInputs, testOutputs = normalisationCNN(train, test)
 
     model = Sequential()
@@ -104,18 +92,14 @@ def filtersCNN():
     model.fit(trainInputs, trainOutputs, epochs=50, validation_data=(testInputs, testOutputs))
     computed = model.predict(x=testInputs)
     computed = [list(elem).index(max(list(elem))) for elem in computed]
-    testOutputs = np.where(testOutputs >= 0.0, 1, 0)
-    acc, prec, recall, cm = evalMultiClass(testOutputs, computed, ['!Sepia', 'Sepia'])
+    # testOutputs = np.where(testOutputs >= 0.0, 1, 0)
+    acc, prec, recall, cm = evaluate(testOutputs, computed, ['!Sepia', 'Sepia'], division=20)
     plot_confusion_matrix(cm, ['!Sepia', 'Sepia'], 'Sepia CNN')
 
 
-def iris():
-    nn = loadIris()
-
-
 if __name__ == '__main__':
-    # digits()
+    digits()
+    iris()
     # filters()
-    filtersCNN()
-    # iris()
+    # filtersCNN()
     print('Hello World!')
