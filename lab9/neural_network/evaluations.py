@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn import neural_network
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, accuracy_score
 
 from lab9.neural_network.my_neural_network import MyNN
 
@@ -23,9 +23,8 @@ def predictByMe(trainInputs, trainOutputs, testInputs):
 
 def evaluate(testOutputs, predictedLabels, labels, division):
     cmx = confusion_matrix(testOutputs, predictedLabels)
-    print(cmx)
-    print(predictedLabels, len(predictedLabels))
-    accuracy = sum([cmx[i][i] for i in range(len(predictedLabels) // division)]) / len(testOutputs)
+    accuracy = accuracy_score(testOutputs, predictedLabels)
+    # accuracy = sum([cmx[i][i] for i in range(len(predictedLabels) // division)]) / len(testOutputs)
     precision = {}
     recall = {}
     for i in range(len(labels)):
@@ -34,4 +33,4 @@ def evaluate(testOutputs, predictedLabels, labels, division):
     print('Accuracy: ', accuracy)
     print('Precision: ', precision)
     print('Recall: ', recall)
-    return cmx
+    return accuracy, precision, recall, cmx

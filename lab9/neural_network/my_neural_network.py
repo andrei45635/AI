@@ -50,13 +50,13 @@ class MyNN:
 
             # error propagated back to the hidden layer
             errBackProg = np.dot(err, np.transpose(weightHO))
-            DAHDZH = sigmoidDerivative(yIH)  # derivative of the activation function with respect to hidden layer output
-            DZHDWH = x
+            dah = sigmoidDerivative(yIH)  # derivative of the activation function with respect to hidden layer output
+            dwh = x
 
             # updating weights and biases
-            errWeightIH = np.dot(np.transpose(DZHDWH), DAHDZH * errBackProg)
+            errWeightIH = np.dot(np.transpose(dwh), dah * errBackProg)
             self.__loss += mean(errWeightIH)
-            errBiasIH = errBackProg * DAHDZH
+            errBiasIH = errBackProg * dah
             weightIH -= self.__learningRate * errWeightIH
             biasIH -= self.__learningRate * errBiasIH.sum(axis=0)
             weightHO -= self.__learningRate * errWeightHO

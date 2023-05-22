@@ -23,21 +23,6 @@ def normalisation(trainData, testData):
     return normalisedTrainData, normalisedTestData
 
 
-def scale(features):
-    min_feat = np.min(features)
-    max_feat = np.max(features)
-    scaled_features = [(feat - min_feat) / (max_feat - min_feat) for feat in features]
-    return scaled_features
-
-
-def normalize(list):
-    normalized_list = []
-    for i in range(len(list)):
-        scalar = scale(list[i])
-        normalized_list.append(scalar)
-    return normalized_list
-
-
 def normalisationCNN(trainData, testData):
     trainInputs, trainOutputs, testInputs, testOutputs = [], [], [], []
     for feat, label in trainData:

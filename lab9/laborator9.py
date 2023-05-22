@@ -7,7 +7,7 @@ import numpy as np
 
 from lab9.utils.load_data import loadDigitData, loadFlowersData
 from lab9.neural_network.evaluations import predictByTool, predictByMe, evaluate
-from lab9.neural_network.normalisation import normalisation, normalisationCNN
+from lab9.neural_network.normalisations import normalisation, normalisationCNN
 from lab9.utils.split_data import splitData, splitDataCNN
 from sklearn import neural_network
 
@@ -22,12 +22,12 @@ def digits():
     trainInputs, testInputs = flattenData(trainInputs, testInputs)
     trainInputs, testInputs = normalisation(trainInputs, testInputs)
     computedOutputs = predictByTool(trainInputs, trainOutputs, testInputs, testOutputs)
-    print('Computed:', list(computedOutputs))
-    print('Real:    ', testOutputs)
+    print('Computed: ', list(computedOutputs))
+    print('Real: ', testOutputs)
     computedOutputsByMe = predictByMe(trainInputs, trainOutputs, testInputs)
-    print('Computed by me:', computedOutputsByMe)
-    print('Real:          ', testOutputs)
-    confusion_matrix_by_me = evaluate(np.array(testOutputs), np.array(computedOutputsByMe), outputNames, division=36)
+    print('Computed by me: ', computedOutputsByMe)
+    print('Real: ', testOutputs)
+    accuracy, precision, recall, confusion_matrix_by_me = evaluate(np.array(testOutputs), np.array(computedOutputsByMe), outputNames, division=36)
     plot_confusion_matrix(confusion_matrix_by_me, outputNames, "Digits classification by me")
 
 
@@ -36,31 +36,25 @@ def iris():
     trainInputs, trainOutputs, testInputs, testOutputs = splitData(inputs, outputs)
     trainInputs, testInputs = normalisation(trainInputs, testInputs)
     computedOutputs = predictByTool(trainInputs, trainOutputs, testInputs, testOutputs)
-    print('Computed:', list(computedOutputs))
-    print('Real:    ', testOutputs)
-    print()
+    print('Computed: ', list(computedOutputs))
+    print('Real: ', testOutputs)
     computedOutputsByMe = predictByMe(trainInputs, trainOutputs, testInputs)
-    print('Computed by me:', computedOutputsByMe)
-    print('Real:          ', testOutputs)
-    confusion_matrix_by_me = evaluate(np.array(testOutputs), np.array(computedOutputsByMe), outputNames, division=10)
+    print('Computed by me: ', computedOutputsByMe)
+    print('Real: ', testOutputs)
+    accuracy, precision, recall, confusion_matrix_by_me = evaluate(np.array(testOutputs), np.array(computedOutputsByMe), outputNames, division=10)
     plot_confusion_matrix(confusion_matrix_by_me, outputNames, "Iris classification by me")
 
 
 def filters():
     inputs, outputs, labels = loadPics()
     trainInputs, trainOutputs, testInputs, testOutputs = splitData(inputs, outputs)
-    trainIns = []
-    for i in trainInputs:
-        if i.shape != (388800,):
-            continue
-        trainIns.append(i.reshape((388800,)))
 
-    trainInputs = np.array(trainIns)
+    trainInputs = np.array(trainInputs)
     trainOutputs = np.array(trainOutputs)
     testInputs = np.array(testInputs)
     testOutputs = np.array(testOutputs)
 
-    classifier = neural_network.MLPClassifier(hidden_layer_sizes=(12, 25, 12), max_iter=10000)
+    classifier = neural_network.MLPClassifier(hidden_layer_sizes=(12, 25, 12), max_iter=5000)
 
     classifier.fit(trainInputs, trainOutputs)
     predictedLabels = classifier.predict(testInputs)
@@ -73,8 +67,8 @@ def filters():
 
 
 def filtersCNN():
-    data = loadPictures('C:\\Users\\GIGABYTE\\OneDrive\\Desktop\\Facultate\\Semestrul 4\\AI\\lab2\\lab9\\sepia_ANN\\data', 64)
-    print(data)
+    data = loadPictures('C:\\Users\\GIGABYTE\\OneDrive\\Desktop\\Facultate\\Semestrul '
+                        '4\\AI\\lab2\\lab9\\sepia_ANN\\data', 64)
     train, test, = splitDataCNN(data)
     trainInputs, trainOutputs, testInputs, testOutputs = normalisationCNN(train, test)
 
@@ -92,7 +86,6 @@ def filtersCNN():
     model.fit(trainInputs, trainOutputs, epochs=50, validation_data=(testInputs, testOutputs))
     computed = model.predict(x=testInputs)
     computed = [list(elem).index(max(list(elem))) for elem in computed]
-    # testOutputs = np.where(testOutputs >= 0.0, 1, 0)
     acc, prec, recall, cm = evaluate(testOutputs, computed, ['!Sepia', 'Sepia'], division=20)
     plot_confusion_matrix(cm, ['!Sepia', 'Sepia'], 'Sepia CNN')
 
@@ -100,6 +93,6 @@ def filtersCNN():
 if __name__ == '__main__':
     digits()
     iris()
-    # filters()
-    # filtersCNN()
+    filters()
+    filtersCNN()
     print('Hello World!')
