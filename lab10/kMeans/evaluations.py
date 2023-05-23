@@ -23,9 +23,9 @@ def predictByMe(trainFeatures, testFeatures, labels, classes):
 
 
 def predictSupervised(trainInputs, trainOutputs, testInputs):
-    classifier = neural_network.MLPClassifier(hidden_layer_sizes=(25, 40, 20), activation='relu', max_iter=1000,
+    classifier = neural_network.MLPClassifier(hidden_layer_sizes=(25, 40, 20), activation='relu', max_iter=50,
                                               solver='sgd',
-                                              verbose=0, random_state=1, learning_rate_init=.01)
+                                              verbose=1, random_state=1, learning_rate_init=.01)
     classifier.fit(trainInputs, trainOutputs)
     computedOutputs = classifier.predict(testInputs)
     return computedOutputs

@@ -28,7 +28,7 @@ def digits():
     print('Computed by me: ', computedOutputsByMe)
     print('Real: ', testOutputs)
     accuracy, precision, recall, confusion_matrix_by_me = evaluate(np.array(testOutputs), np.array(computedOutputsByMe), outputNames, division=36)
-    plot_confusion_matrix(confusion_matrix_by_me, outputNames, "Digits classification by me")
+    plot_confusion_matrix(confusion_matrix_by_me, outputNames, "Digits - makeshift ANN")
 
 
 def iris():
@@ -42,7 +42,7 @@ def iris():
     print('Computed by me: ', computedOutputsByMe)
     print('Real: ', testOutputs)
     accuracy, precision, recall, confusion_matrix_by_me = evaluate(np.array(testOutputs), np.array(computedOutputsByMe), outputNames, division=10)
-    plot_confusion_matrix(confusion_matrix_by_me, outputNames, "Iris classification by me")
+    plot_confusion_matrix(confusion_matrix_by_me, outputNames, "Iris - makeshift ANN")
 
 
 def filters():
@@ -63,7 +63,7 @@ def filters():
     print('acc: ', acc)
     print('precision: ', prec)
     print('recall: ', recall)
-    plot_confusion_matrix(cm, labels, 'Sepia ANN')
+    plot_confusion_matrix(cm, labels, 'Sepia ANN sklearn')
 
 
 def filtersCNN():
@@ -87,7 +87,7 @@ def filtersCNN():
     computed = model.predict(x=testInputs)
     computed = [list(elem).index(max(list(elem))) for elem in computed]
     acc, prec, recall, cm = evaluate(testOutputs, computed, ['!Sepia', 'Sepia'], division=20)
-    plot_confusion_matrix(cm, ['!Sepia', 'Sepia'], 'Sepia CNN')
+    plot_confusion_matrix(cm, ['!Sepia', 'Sepia'], 'Sepia CNN keras')
 
 
 if __name__ == '__main__':
